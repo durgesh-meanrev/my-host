@@ -21,40 +21,15 @@
 // export default sequelize;
 import { Sequelize } from "sequelize";
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME as string,
-  process.env.DB_USERNAME as string,
-  process.env.DB_PASSWORD,
-  {
-    dialect: "mysql",
-    host: process.env.DB_HOST_NAME,
-    port: 28823,
-    timezone: '+05:30', // Fixed: Use offset instead of timezone name
-    dialectOptions: {
-      ssl: {
-        rejectUnauthorized: false
-      }
-    },
-    logging: console.log, // Enable logging to see connection details
-    pool: {
-      max: 25,
-      min: 0,
-      acquire: 60000,
-      idle: 20000,
-    },
+const sequelize = new Sequelize("mysql://avnadmin:AVNS_1XleFjXtG0colSz40yg@mysql-bc9d20f-meanrev-4388.j.aivencloud.com:28823/defaultdb?ssl-mode=REQUIRED", {
+  dialect: 'mysql',
+  logging: false,
+  pool: {
+    max: 10,
+    min: 0,
+    acquire: 30000,
+    idle: 10000,
   }
-);
-
-// Test connection function
-export async function testConnection() {
-  try {
-    await sequelize.authenticate();
-    console.log('Database connection established successfully.');
-    return true;
-  } catch (error) {
-    console.error('Unable to connect to database:', error);
-    return false;
-  }
-}
+});
 
 export default sequelize;
