@@ -4,7 +4,7 @@ import fastifyCors from "@fastify/cors";
 import fastifyCookie from "@fastify/cookie";
 import fastifyHelmet from "@fastify/helmet";
 // import routes from "./routes";
-import sequelize from "./utils/config.utils";
+// import sequelize from "./utils/config.utils";
 import { BASE_URL, NODE_ENV } from "./utils/constants.utils";
 import defineAssociations from "./associations";
 
@@ -15,11 +15,11 @@ const fastify = Fastify({
 const start = async () => {
   try {
     await fastify.register(fastifyHelmet)
-    await fastify.register(fastifyCors, {
-      origin: BASE_URL,
-      methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-      credentials: true,
-    });
+    // await fastify.register(fastifyCors, {
+    //   origin: BASE_URL,
+    //   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    //   credentials: true,
+    // });
 
     await fastify.register(fastifyCookie, {
       secret: process.env.COOKIE_SECRET || "your-secret-key"
