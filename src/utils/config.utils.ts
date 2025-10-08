@@ -21,7 +21,7 @@
 // export default sequelize;
 import { Sequelize } from "sequelize";
 
-const sequelize = new Sequelize("mysql://avnadmin:AVNS_1XleFjXtG0colSz40yg@mysql-bc9d20f-meanrev-4388.j.aivencloud.com:28823/defaultdb?ssl-mode=REQUIRED", {
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'mysql',
   logging: false,
   pool: {
