@@ -3,8 +3,8 @@ import Fastify from "fastify";
 import fastifyCors from "@fastify/cors";
 import fastifyCookie from "@fastify/cookie";
 import fastifyHelmet from "@fastify/helmet";
-// import routes from "./routes";
-// import sequelize from "./utils/config.utils";
+import routes from "./routes";
+import sequelize from "./utils/config.utils";
 import { BASE_URL, NODE_ENV } from "./utils/constants.utils";
 import defineAssociations from "./associations";
 
@@ -37,7 +37,7 @@ const start = async () => {
       return { message: "Server is running" };
     });
 
-    // await fastify.register(routes);
+    await fastify.register(routes);
 
     fastify.setErrorHandler((error: any, request, reply) => {
       console.error("Server Error:", error.message);
@@ -58,8 +58,8 @@ const start = async () => {
     });
 
     defineAssociations();
-    // await sequelize.authenticate();    
-    // await sequelize.sync();
+    await sequelize.authenticate();    
+    await sequelize.sync();
 
     const port = Number(process.env.PORT) || 3000;
     const host = NODE_ENV === "production" ? "0.0.0.0" : "localhost";
@@ -77,7 +77,7 @@ const gracefulShutdown = async () => {
   console.log("Shutting down gracefully...");
   try {
     await fastify.close();
-    // await sequelize.close();
+    await sequelize.close();
     console.log("All connections closed");
     process.exit(0);
   } catch (error) {
