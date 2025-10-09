@@ -19,7 +19,7 @@ const start = async () => {
     // ✅ Enable CORS
     await fastify.register(fastifyCors, {
       origin: NODE_ENV === "production" ? BASE_URL : true, // allow all in dev
-      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
       allowedHeaders: ["Content-Type", "Authorization"],
       credentials: true,
     });
