@@ -14,17 +14,21 @@ const fastify = Fastify({
 
 const start = async () => {
   try {
-    await fastify.register(fastifyHelmet)
-    // await fastify.register(fastifyCors, {
-    //   origin: BASE_URL,
-    //   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    //   credentials: true,
-    // });
+    await fastify.register(fastifyHelmet);
+
+    // ✅ Enable CORS
+    await fastify.register(fastifyCors, {
+      origin: NODE_ENV === "production" ? BASE_URL : true, // allow all in dev
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+      credentials: true,
+    });
 
     await fastify.register(fastifyCookie, {
       secret: process.env.COOKIE_SECRET || "your-secret-key"
     });
 
+    // // Optional HTTPS redirect in production
     // if (NODE_ENV === "production") {
     //   fastify.addHook("onRequest", async (request, reply) => {
     //     if (request.headers["x-forwarded-proto"] !== "https") {
@@ -33,12 +37,13 @@ const start = async () => {
     //   });
     // }
 
-    fastify.get("/health", async () => {
-      return { message: "Server is running" };
-    });
+    // Health check
+    fastify.get("/health", async () => ({ message: "Server is running" }));
 
+    // Register routes
     await fastify.register(routes);
 
+    // Error handling
     fastify.setErrorHandler((error: any, request, reply) => {
       console.error("Server Error:", error.message);
       if (error.code === "EBADCSRFTOKEN") {
@@ -57,8 +62,9 @@ const start = async () => {
       });
     });
 
+    // Sequelize
     defineAssociations();
-    await sequelize.authenticate();    
+    await sequelize.authenticate();
     await sequelize.sync();
 
     const port = Number(process.env.PORT) || 3000;
