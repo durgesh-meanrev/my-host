@@ -9,7 +9,7 @@ import { BASE_URL, NODE_ENV } from "./utils/constants.utils";
 import defineAssociations from "./associations";
 
 const fastify = Fastify({
-  logger: NODE_ENV !== "production"
+  logger: NODE_ENV !== "production",
 });
 
 const start = async () => {
@@ -17,15 +17,16 @@ const start = async () => {
     await fastify.register(fastifyHelmet);
 
     // ✅ Enable CORS
+    // Temporary fix for testing
     await fastify.register(fastifyCors, {
-      origin: NODE_ENV === "production" ? BASE_URL : true, // allow all in dev
+      origin: "*", // Allow all origins temporarily
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
       allowedHeaders: ["Content-Type", "Authorization"],
       credentials: true,
     });
 
     await fastify.register(fastifyCookie, {
-      secret: process.env.COOKIE_SECRET || "your-secret-key"
+      secret: process.env.COOKIE_SECRET || "your-secret-key",
     });
 
     // // Optional HTTPS redirect in production
@@ -50,15 +51,15 @@ const start = async () => {
         return reply.status(403).send({ message: "Invalid CSRF token" });
       }
       const statusCode = error.statusCode || 500;
-      reply.status(statusCode).send({ 
-        message: statusCode === 500 ? "Something went wrong" : error.message 
+      reply.status(statusCode).send({
+        message: statusCode === 500 ? "Something went wrong" : error.message,
       });
     });
 
     fastify.setNotFoundHandler((request, reply) => {
-      reply.status(404).send({ 
+      reply.status(404).send({
         message: "Route not found",
-        path: request.url 
+        path: request.url,
       });
     });
 
