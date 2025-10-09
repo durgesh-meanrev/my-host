@@ -19,17 +19,32 @@
 // );
 
 // export default sequelize;
+
 import { Sequelize } from "sequelize";
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  dialect: 'mysql',
-  logging: false,
-  pool: {
-    max: 10,
-    min: 0,
-    acquire: 30000,
-    idle: 10000,
+const sequelize = new Sequelize(
+  process.env.DB_NAME as string,
+  process.env.DB_USERNAME as string,
+  process.env.DB_PASSWORD,
+  {
+    dialect: "mysql",
+    host: process.env.DB_HOST_NAME,
+    port: parseInt(process.env.DB_PORT || '28823'),
+    timezone: '+05:30',
+    dialectOptions: {
+      ssl: {
+        rejectUnauthorized: false, // Required for Aiven
+      }
+    },
+    logging: process.env.NODE_ENV === 'development' ? console.log : false,
+    pool: {
+      max: 10, // Reduce for Render's free tier
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
+    retry: {
+      max: 3, // Add retry logic
+    }
   }
-});
-
-export default sequelize;
+);
